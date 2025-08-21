@@ -66,7 +66,7 @@ export default function StockPage() {
                     days = 10000;
                     limit = 10000;
                 }
-                let url = `https://portal.tradebrains.in/api/assignment/stock/${symbol}/prices?days=${days}&type=${type}&limit=${limit}`;
+                const url = `https://portal.tradebrains.in/api/assignment/stock/${symbol}/prices?days=${days}&type=${type}&limit=${limit}`;
 
                 const res = await fetch(url);
                 const data: StockPrice[] = await res.json();
@@ -74,7 +74,7 @@ export default function StockPage() {
                 setCompany(symbol?.toUpperCase() || "");
             }
             catch (error) {
-                console.error("Error");
+                console.error("Error", error);
             }
             finally {
                 setIsLoading(false);

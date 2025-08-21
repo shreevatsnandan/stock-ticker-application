@@ -33,7 +33,7 @@ export default function RollingTicker() {
                 setStocks(combined);
                 setIsLoading(false);
             } catch (err) {
-                console.error("Error fetching ticker", err);
+                console.error("Error", err);
                 setIsLoading(false);
             }
         };
@@ -49,7 +49,6 @@ export default function RollingTicker() {
                 <div className="text-center">Loading market data...</div>
             ) :  (
                 <div className="slider relative w-full overflow-hidden">
-                    {/* Sliding track */}
                     <div className="slide-track flex animate-scroll">
                         {[...stocks, ...stocks].map((stock, idx) => (
                             <div

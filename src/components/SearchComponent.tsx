@@ -31,7 +31,7 @@ export default function SearchComponent() {
         setResults(res.data || []);
         setIsopen(true);
       } catch (err) {
-        console.error("Error fetching search results", err);
+        console.error("Error", err);
         setIsopen(false);
       }
     };
