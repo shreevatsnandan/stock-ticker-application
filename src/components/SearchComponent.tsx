@@ -6,7 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 interface Stock {
-  name: string;
+  company: string;
   symbol: string;
 }
 
