@@ -1,9 +1,9 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import SearchComponent from "@/components/SearchComponent";
 import RollingTicker from "@/components/RollingTicker";
+import Head from 'next/head';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 
 interface StockPrice {
@@ -31,8 +31,9 @@ export default function StockPage() {
     const [timePeriod, setTimePeriod] = useState<TimePeriod>("1D");
     const [isLoading, setIsLoading] = useState(false);
     const [company, setCompany] = useState<string>("");
+ const [companyName, setCompanyName] = useState(symbol);
 
-
+   
     useEffect(() => {
         const fetchStock = async () => {
             setIsLoading(true);
@@ -70,6 +71,7 @@ export default function StockPage() {
 
                 const res = await fetch(url);
                 const data: StockPrice[] = await res.json();
+                
                 setPrices(data);
                 setCompany(symbol?.toUpperCase() || "");
             }
@@ -82,6 +84,45 @@ export default function StockPage() {
         };
         fetchStock();
     }, [symbol, timePeriod]);
+
+
+    useEffect(() => {
+      const fetchCompany = async () => {
+        try {
+          const res = await fetch(`https://portal.tradebrains.in/api/assignment/search?keyword=${symbol}&length=1`);
+          const data = await res.json();
+          setCompanyName(data[0].company || symbol); 
+        } catch (err) {
+          console.error("Error fetching company name", err);
+          setCompanyName(symbol);
+        }
+      };
+
+      fetchCompany();
+    });
+
+
+useEffect(() => {
+  if (companyName && symbol) {
+
+    document.title = `${companyName} (${symbol}) Stock Price & Chart | Trade Brains`;
+    
+    let metaDescription = document.querySelector('meta[name="description"]');
+    
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.name = 'description';
+      document.head.appendChild(metaDescription);
+    }
+    
+    metaDescription.content = `real-time stock prices for ${companyName} (${symbol}).`;
+  }
+  
+  return () => {
+    document.title = 'Trade Brains | Stock Market Analysis';
+  };
+}, [companyName, symbol]);
+   
 
     useEffect(() => {
         const saved = localStorage.getItem("watchlist");
@@ -146,12 +187,15 @@ export default function StockPage() {
     };
 
     return (
+        <>
+     
+
         <div className="min-h-screen bg-gray-50 text-black">
             <RollingTicker />
             <SearchComponent />
             <main className="container mx-auto px-4 py-6">
                 <div className="text-4xl  text-black text-center rounded-full">
-                    {symbol}
+                    {companyName}
                 </div>
                 <div className="flex justify-center mb-6">
                     <button
@@ -169,6 +213,8 @@ export default function StockPage() {
                                 </div>
                             </div>
                         ) : prices.length > 0 ? (
+                            <>
+                           
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={prices} margin={{ top: 15, right: 20, bottom: 5, left: 0 }}>
                                     <CartesianGrid strokeDasharray="3 6" />
@@ -189,6 +235,7 @@ export default function StockPage() {
                                     />
                                 </LineChart>
                             </ResponsiveContainer>
+                            </>
                         ) : (
                             <div className="h-full flex items-center justify-center">
                                 <p className="text-gray-600">No data available</p>
@@ -260,5 +307,6 @@ export default function StockPage() {
                 )}
             </main>
         </div>
+        </>
     );
 }
