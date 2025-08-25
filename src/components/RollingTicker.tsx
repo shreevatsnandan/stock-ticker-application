@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -51,6 +51,7 @@ export default function RollingTicker() {
                 <div className="slider relative w-full overflow-hidden">
                     <div className="slide-track flex animate-scroll">
                         {[...stocks, ...stocks].map((stock, idx) => (
+                            <Link href={`/stock/${stock.symbol}`}>
                             <div
                                 key={`${stock.symbol}-${idx}`}
                                 className="slide flex-shrink-0 w-64 h-20 flex flex-col items-center justify-center mx-4 bg-gray-900 rounded-lg shadow"
@@ -66,6 +67,7 @@ export default function RollingTicker() {
                                     {Math.abs(stock.percent).toFixed(2)}%
                                 </span>
                             </div>
+                            </Link>
                         ))}
                     </div>
 
