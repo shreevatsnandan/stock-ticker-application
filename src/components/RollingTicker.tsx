@@ -51,7 +51,7 @@ export default function RollingTicker() {
                 <div className="slider relative w-full overflow-hidden">
                     <div className="slide-track flex animate-scroll">
                         {[...stocks, ...stocks].map((stock, idx) => (
-                            <Link href={`/stock/${stock.symbol}`}>
+                            <Link key={`${stock.symbol}-${idx}`}  href={`/stock/${stock.symbol}`}>
                             <div
                                 key={`${stock.symbol}-${idx}`}
                                 className="slide flex-shrink-0 w-64 h-20 flex flex-col items-center justify-center mx-4 bg-gray-900 rounded-lg shadow"
